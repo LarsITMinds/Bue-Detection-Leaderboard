@@ -30,13 +30,11 @@ def main():
             print("Finding words for image: " + adapted_images[index][1])
             predicted_texts = predict_scoreboard_text(adapted_images[index][0], adapted_images[index][1])
 
-            print(predicted_texts)
+            #print(predicted_texts)
 
             player_words = group_words_by_player(predicted_texts, adapted_images[index][0].shape[1])
 
             sorted_player_words = []
-            print(" ")
-            print(player_words)
             for i in range(len(player_words)):
                 #print("Stats for player", i + 1)
                 sorted_player_words.append([])
@@ -62,9 +60,6 @@ def main():
 
                     #print("Predicted word: " + predicted_word + " - Most matched word: " + most_matched_word)
                 #print(" ")
-
-            print(" ")
-            print(sorted_player_words)
 
             players = []
             for i in range(len(sorted_player_words)):
@@ -106,7 +101,7 @@ def predict_scoreboard_text(original_image: Image, file_name: str):
 
         #text_areas.append(image[y: y + height, x: x + width])
         #if file_name == "24":
-        print("Predicting possible word: " + str(index) + " out of " + str(len(possible_test_contours)))
+        print("Predicting possible word: " + str(index + 1) + " out of " + str(len(possible_test_contours)))
         image_of_word = image[y: y + height, x: x + width]
         predicted_word = predict_word(image_of_word, file_name + str(index))
 
