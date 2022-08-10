@@ -77,4 +77,4 @@ def find_most_matching_word(predicted_word):
 
     #print("Distance: ", current_distance)
 
-    return guessed_word
+    return guessed_word, current_distance

@@ -5,6 +5,7 @@ import screen_detection
 import text_detection
 import numpy as np
 
+from Classes.Player import Player
 from training import get_training_data
 from util import sort_list_of_symbols, find_most_matching_word, group_words_by_player
 
@@ -33,14 +34,56 @@ def main():
 
             player_words = group_words_by_player(predicted_texts, adapted_images[index][0].shape[1])
 
-
-            for index in range(len(player_words)):
-                print("Stats for player", index + 1)
-                for predicted_word_info in player_words[index]:
+            sorted_player_words = []
+            print(" ")
+            print(player_words)
+            for i in range(len(player_words)):
+                #print("Stats for player", i + 1)
+                sorted_player_words.append([])
+                for predicted_word_info in player_words[i]:
+                    break_outer = False
                     predicted_word = predicted_word_info[0]
-                    most_matched_word = find_most_matching_word(predicted_word)
-                    print("Predicted word: " + predicted_word + " - Most matched word: " + most_matched_word)
-                print(" ")
+                    most_matched_word, distance = find_most_matching_word(predicted_word)
+
+                    for j in range(len(sorted_player_words[i])):
+                        player_stat = sorted_player_words[i][j]
+                        if player_stat[0] == most_matched_word:
+                            if player_stat[1] > distance:
+                                sorted_player_words[i][j] = [most_matched_word, distance, predicted_word]
+                                break_outer = True
+                                break
+                            else:
+                                break
+
+                    if break_outer:
+                        break
+
+                    sorted_player_words[i].append([most_matched_word, distance, predicted_word])
+
+                    #print("Predicted word: " + predicted_word + " - Most matched word: " + most_matched_word)
+                #print(" ")
+
+            print(" ")
+            print(sorted_player_words)
+
+            players = []
+            for i in range(len(sorted_player_words)):
+                players.append(Player(i + 1))
+                for word_info in sorted_player_words[i]:
+                    if word_info[0] == "Kills":
+                        amount = word_info[2].split(" ")[1]
+                        players[i].kills = amount
+                    elif word_info[0] == "Deaths":
+                        amount = word_info[2].split(" ")[1]
+                        players[i].deaths = amount
+                    elif word_info[0] == "Self":
+                        amount = word_info[2].split(" ")[1]
+                        players[i].self = amount
+                    else:
+                        players[i].awards.append(word_info[0])
+
+            for player in players:
+                player.print_information()
 
 
 def predict_scoreboard_text(original_image: Image, file_name: str):
